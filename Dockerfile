@@ -8,9 +8,10 @@ MAINTAINER Diana Sousa <dfsousa@lasige.di.fc.ul.pt>
 
 WORKDIR /
 COPY bin/ bin/
-COPY data/ data/
 COPY corpora/ corpora/
-COPY src/ src/
+COPY data/ data/
+
+#@TODO Add a mount point to data, corpora and source
 RUN apt-get update -y
 RUN apt-get dist-upgrade -y
 
@@ -67,10 +68,11 @@ RUN apt-get update && \
         apt-get update -y  && \
         apt-get install -y build-essential python3.6 python3.6-dev python3-pip && \
         apt-get install -y git  && \
+        apt-get install -y vim  && \
         # update pip
         python3.6 -m pip install pip --upgrade && \
         python3.6 -m pip install wheel && \
-        pip3 install scipy && pip3 install -r requirements.txt
+        pip3 install numpy && pip install scipy==0.18.1 && pip3 install -r requirements.txt
 
 RUN apt-get update -y && apt-get -y install git liblapack-dev liblapack3 libopenblas-base libopenblas-dev
 RUN apt-get update -y && apt-get -y install libmysqlclient-dev -y
@@ -84,7 +86,7 @@ RUN pip3 install word2vec
 RUN python3.6 -m nltk.downloader punkt
 #RUN python3 -m nltk.downloader punkt
 RUN pip3 install python-levenshtein
-RUN pip3 install numpy --upgrade
+RUN pip3 install numpy==1.17.0
 RUN mv /bin/IHP/bin/base.prop /bin/IHP/bin/stanford-ner-2015-04-20/
 ENV RUBYOPT="-KU -E utf-8:utf-8"
 
@@ -112,27 +114,23 @@ RUN wget http://www.nactem.ac.uk/y-matsu/geniass/geniass-1.00.tar.gz && \
 WORKDIR geniass
 RUN apt-get update -y && apt-get install -y build-essential g++ make && make
 
-
 # --------------------------------------------------------------
-#        HUMAN PHENOTYPE ONTOLOGY GOLD STANDARD RELATIONS
-# --------------------------------------------------------------
-
-WORKDIR /data
-RUN wget http://compbio.charite.de/jenkins/job/hpo.annotations.monthly/lastSuccessfulBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt
-RUN wget http://compbio.charite.de/jenkins/job/hpo.annotations.monthly/lastSuccessfulBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_phenotype_to_genes.txt
-
-
-# --------------------------------------------------------------
-#                    GENE 2 GO CORRESPONDENCE
+#                DOWNLOAD CORPORA
 # --------------------------------------------------------------
 
-WORKDIR /data
-RUN wget ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2go.gz
-
+WORKDIR /corpora
+#Download COPD
+RUN wget http://www.nactem.ac.uk/COPD/COPD_corpus.tar.gz && tar -xvzf COPD_corpus.tar.gz
+# Download PhenoCHF
+RUN wget http://www.nactem.ac.uk/phenotype/PhenoCHF-corpus.tar.gz && tar -xvzf PhenoCHF-corpus.tar.gz
+# Download NCBI-Disease
+RUN wget https://www.ncbi.nlm.nih.gov/CBBresearch/Dogan/DISEASE/NCBI_corpus.zip && unzip -d NCBI-disease NCBI_corpus.zip
 
 # --------------------------------------------------------------
 #                         ADDED FEATURES
 # --------------------------------------------------------------
+
+RUN rm /usr/bin/python3 && ln -s /usr/bin/python3.6 /usr/bin/python3
 
 ENV localedef -i en_US -f UTF-8 C.UTF-8
 ENV LANG="C.UTF-8"

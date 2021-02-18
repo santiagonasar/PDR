@@ -26,9 +26,9 @@ Our academic paper which describes PGR in detail can be found [here](https://acl
  cd bin/
  git clone git@github.com:lasigeBioTM/MER.git
  git clone -b IHP_Python3.6 --single-branch git@github.com:lasigeBioTM/IHP.git
+ git clone git@github.com:santiagonasar/xmlAnn.git
 ````
-Use the Dockerfile to setup the rest of the experimental environment or the [PGR Image](https://hub.docker.com/r/dpavot/pgr) available at Docker Hub.
-   
+ 
 ## Usage
 
 Run Stanford CoreNLP for the IHP to be able to annotate the human phenotype entities.
@@ -41,7 +41,7 @@ Run Stanford CoreNLP for the IHP to be able to annotate the human phenotype enti
 ### Retrieving Abstracts
 
 ````
- python3 src/pubmed_corpus.py [NUMBER]
+ python3.6 src/pubmed_corpus.py [NUMBER]
 ````
 
 where [NUMBER] (integer) corresponds to the intended number of abstracts per gene that participates in human phenotype-gene relations.
@@ -52,7 +52,7 @@ where [NUMBER] (integer) corresponds to the intended number of abstracts per gen
 ### Annotating Genes, Human Phenotypes and Relations
 
 ````
- python3 src/annotations.py
+ python3.6 src/annotations.py
 ````
 
 * Creates: 
@@ -65,7 +65,7 @@ where [NUMBER] (integer) corresponds to the intended number of abstracts per gen
 ### Creating a XML Format Corpus
 
 ````
- python3 src/pgr_corpus.py [ENTITY TYPE]
+ python3.6 src/pgr_corpus.py [ENTITY TYPE]
 ````
 
 where [ENTITY TYPE] (*gene* or *go*) corresponds to the intended pair of entities (human phenotype-gene pair or human phenotype-go pair) to generate an XML format corpus with. The GO (Gene Ontology) term corresponds to the most representative term for the gene that establishes the relation with that human phenotype.
@@ -78,7 +78,7 @@ where [ENTITY TYPE] (*gene* or *go*) corresponds to the intended pair of entitie
 ### General Statistics
 
 ````
- python3 src/statistics.py
+ python3.6 src/statistics.py
 ````
 
 * Creates: 
